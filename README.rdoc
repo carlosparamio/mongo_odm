@@ -1,0 +1,251 @@
+= mongo_odm
+
+Flexible persistence module for any Ruby class to MongoDB.
+
+= Why another ODM for MongoDB?
+
+MongoMapper, Mongoid, and others, are amazing projects. But I still think it's too much for an ODM for MongoDB.
+The Mongo Ruby driver allows you to query the database with a nice interface, the only required thing is a way to instanciate
+the results as objects of predefined classes, so you can encapsulate all the logic under a particular class and don't have to
+worry about type conversions.
+
+= Basics
+
+A piece of code is better than a hundred words:
+
+  class Shape
+    include MongoODM::Document
+    field :name
+    field :x, Float, :default => 0.0
+    field :y, Float, :default => 0.0
+  end
+  
+  shape = Shape.new(:name => "Point", :x => 0, :y => 5)
+  shape.save
+  
+  # Saves:
+  # { "_id"    : ObjectId("4be97178715dd2c4be000006"),
+  #   "_class" : "Shape",
+  #   "x"      : 0,
+  #   "y"      : 5,
+  #   "color"  : null,
+  #   "name"   : "Point"
+  # }
+  
+  class Circle < Shape
+    set_collection :shapes # Because we don't want them to be saved on a separated collection
+    field :radius, Float, :default => 1.0
+  end
+  
+  circle = Circle.new.save
+  
+  # Saves:
+  # { "_id"    : ObjectId("4be97203715dd2c4be000007"),
+  #   "_class" : "Circle",
+  #   "x"      : 1,
+  #   "y"      : 1,
+  #   "color"  : null,
+  #   "radius" : 1 }
+
+  all_shapes = Shape.find.to_a
+  
+  # Returns all the shapes; notice they are of different classes:
+  # [ #<Shape x: 0.0, y: 5.0, color: nil, name: "Point", _id: {"$oid"=>"4be97178715dd2c4be000006"}>,
+  #   #<Circle x: 1.0, y: 1.0, color: nil, radius: 1.0, _id: {"$oid"=>"4be97293715dd2c4be000008"}> ]
+
+In fact, you can instanciate any document stored as a hash to the appropiate class. The document just need
+to have the attribute "_class" set to the name of the class you want to use as the object type. Example:
+
+  MongoODM.instanciate({ :x => 12, :y => 5, '_class' => 'Circle' })
+
+  # Returns:
+  # #<Circle x: 12.0, y: 5.0, color: nil, radius: 1.0>
+
+= Associations
+
+To embed just one copy of another class, just define the field type of that class. The class just need to respond to the "type_cast" class method and the "to_mongo" instance method. Example:
+
+  class RGB
+    def initialize(r, g, b)
+      @r, @g, @b = r, g, b
+    end
+    
+    def inspect
+      "RGB(#{@r},#{@g},#{@b})"
+    end
+    
+    def to_mongo
+      [@r, @g, @b]
+    end
+    
+    def self.type_cast(value)
+      return nil if value.nil?
+      return value if value.is_a?(RGB)
+      return new(value[0], value[1], value[2]) if value.is_a?(Array)
+    end
+  end
+
+  class Color
+    include MongoODM::Document
+    field :name
+    field :rgb, RGB
+    
+    create_index :name, :unique => true
+  end
+  
+  color = Color.new(:name => "red", :rgb => RGB.new(255,0,0))
+  color.save
+  
+  # Saves:
+  # {"_class":"Color","name":"red","rgb":[255,0,0],"_id":{"$oid": "4bf070fb715dd271c2000001"}}
+
+  red = Color.find({:name => "red"}).first
+  
+  # Returns:
+  # #<Color name: "red", rgb: RGB(255,0,0), _id: {"$oid"=>"4bf070fb715dd271c2000001"}>
+  
+
+Of course, if the embedded object's class includes the MongoODM::Document module, you don't need to
+define those methods. Just define the field as that class:
+
+  class RGB
+    include MongoODM::Document
+    field :r, Fixnum
+    field :g, Fixnum
+    field :b, Fixnum
+  end
+
+  class Color
+    include MongoODM::Document
+    field :name
+    field :rgb, RGB
+  end
+  
+  color = Color.new(:name => "red", :rgb => RGB.new(:r => 255, :g => 0, :b => 0))
+  color.save
+  
+  # Saves:
+  # {"_class":"Color","name":"red","rgb":{"_class":"RGB","r":255,"g":0,"b":0},"_id":{"$oid": "4bf073e3715dd27212000001"}}
+
+  red = Color.find({:name => "red"}).first
+  
+  # Returns:
+  # #<Color name: "red", rgb: #<RGB r: 255, g: 0, b: 0>, _id: {"$oid"=>"4bf073e3715dd27212000001"}>
+
+
+If you want to save a collection of objects, just define the field as an Array. You can even store objects of different types!
+
+  class Shape
+    include MongoODM::Document
+    field :x, Float
+    field :y, Float
+  end
+  
+  class Circle < Shape
+    include MongoODM::Document
+    field :radius, Float
+  end
+  
+  class Line < Shape
+    include MongoODM::Document
+    field :dx, Float
+    field :dy, Float
+  end
+
+  class Draw
+    include MongoODM::Document
+    field :objects, Array
+  end
+
+  circle1 = Circle.new(:x => 1, :y => 1, :radius => 10)
+  circle2 = Circle.new(:x => 2, :y => 2, :radius => 20)
+  line = Line.new(:x => 0, :y => 0, :dx => 10, :dy => 5)
+
+  draw = Draw.new(:objects => [circle1, line, circle2])
+  draw.save
+  
+  # Saves:
+  # { "_class" : "Draw",
+  #   "objects" : [ { "_class" : "Circle",
+  #                   "x" : 1.0,
+  #                   "y" : 1.0,
+  #                   "color" : null,
+  #                   "radius" : 10.0 },
+  #                 { "_class" : "Line",
+  #                   "x" : 0.0,
+  #                   "y" : 0.0,
+  #                   "color" : null,
+  #                   "dx" : 10.0,
+  #                   "dy" : 5.0},
+  #                 { "_class" : "Circle",
+  #                   "x" : 2.0,
+  #                   "y" : 2.0,
+  #                   "color" : null,
+  #                   "radius" : 20.0 } ],
+  #   "_id":{"$oid": "4bf0775d715dd2725a000001"}}
+
+  Draw.find_one
+  
+  # Returns
+  # #<Draw objects: [#<Circle x: 1.0, y: 1.0, color: nil, radius: 10.0>, #<Line x: 0.0, y: 0.0, color: nil, dx: 10.0, dy: 5.0>, #<Circle x: 2.0, y: 2.0, color: nil, radius: 20.0>], _id: {"$oid"=>"4bf0775d715dd2725a000001"}>
+
+
+To reference the associated objects instead of embed them, for now you need to define your own methods. Example:
+
+  class Flag
+    include MongoODM::Document
+    field :colors, Array
+    
+    def colors
+      Color.find(:_id => {'$in' => read_attribute(:colors)})
+    end
+  end
+
+  class Color
+    include MongoODM::Document
+    field :name
+  end
+
+  Color.new(:name => "red").save
+  Color.new(:name => "green").save
+
+  flag = Flag.new(:colors => [ Color.find_one(:name => "red").id, Color.find_one(:name => "green").id ])
+  flag.save
+
+  # Saves:
+  # { "_id"    : ObjectId("4be96c15715dd2c4be000003"),
+  #   "_class" : "Flag",
+  #   "colors" : [ ObjectId("4be96bfe715dd2c4be000001"), ObjectId("4be96c08715dd2c4be000002") ]
+  # }
+  
+  flag.colors
+  
+  # Returns a cursor
+  
+  flag.colors.to_a
+  
+  # Returns:
+  # [#<Color name: "red", _id: {"$oid"=>"4be96bfe715dd2c4be000001"}>, #<Color name: "green", _id: {"$oid"=>"4be96c08715dd2c4be000002"}>]
+
+= Callbacks
+
+For now, the available callbacks are: after_initialize, before_save, after_save
+
+= Validations
+
+All the validation methods defined in ActiveModel::Validations are included
+
+= Dirty
+
+All the dirty object methods defined in ActiveModel::Dirty are included
+
+= TODO
+
+ * Add helpers to define attributes as referenced objects
+ * Increase rspec coverage
+ * Document, document, document!
+ * Create useful modules to make common operations easier (versioning, localization, etc)
+
+= Copyright
+
+Copyright © 2010 Carlos Paramio. See LICENSE for details.
