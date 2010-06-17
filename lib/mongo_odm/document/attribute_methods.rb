@@ -12,6 +12,7 @@ module MongoODM
       autoload :Write
       autoload :Query
       autoload :Dirty
+      autoload :Inspect
       autoload :Localization
 
       included do
@@ -20,6 +21,7 @@ module MongoODM
         include MongoODM::Document::AttributeMethods::Write
         include MongoODM::Document::AttributeMethods::Query
         include MongoODM::Document::AttributeMethods::Dirty
+        include MongoODM::Document::AttributeMethods::Inspect
         include MongoODM::Document::AttributeMethods::Localization
       end
 

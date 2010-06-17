@@ -19,7 +19,7 @@ module MongoODM
         end
       
         def inspect
-          "#<#{self.class.name} #{attributes.except(*private_attribute_names).keys.map{|k| "#{k}: #{read_attribute(k).inspect}"}.join(", ")}>"
+          "#<#{self.class.name} #{attributes.except(*private_attribute_names).keys.map{|k| inspect_attribute(k)}.join(", ")}>"
         end
       end
 

@@ -7,7 +7,7 @@ module MongoODM
     extend ActiveSupport::Concern
     extend ActiveSupport::Autoload
 
-    autoload :Associations
+    #autoload :Associations
     autoload :AttributeMethods
     autoload :Callbacks
     autoload :Fields
@@ -25,9 +25,16 @@ module MongoODM
       include MongoODM::Document::AttributeMethods
       include MongoODM::Document::Fields
       include MongoODM::Document::Inspect
-      include MongoODM::Document::Associations
+      #include MongoODM::Document::Associations
       include MongoODM::Document::Callbacks
       include MongoODM::Document::Validations
+    end
+    
+    module InstanceMethods
+      def ==(other)
+        return false unless other.is_a?(MongoODM::Document)
+        attributes == other.attributes
+      end
     end
 
   end

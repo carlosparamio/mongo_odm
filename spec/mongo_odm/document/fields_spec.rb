@@ -8,16 +8,12 @@ describe MongoODM::Document::Fields do
     context "with a name and no type" do
       
       before do
-        BlankSlate.field(:testing_no_type)
-      end
-      
-      after do
-        BlankSlate.instance_variable_set(:@fields, nil)
+        class TestingNoType < BlankSlate; field :testing_no_type; end
       end
       
       it "adds a String field to the class" do
-        BlankSlate.fields[:testing_no_type].should be_kind_of(MongoODM::Document::Fields::Field)
-        BlankSlate.fields[:testing_no_type].type.should == String
+        TestingNoType.fields[:testing_no_type].should be_kind_of(MongoODM::Document::Fields::Field)
+        TestingNoType.fields[:testing_no_type].type.should == String
       end
       
     end
@@ -25,12 +21,12 @@ describe MongoODM::Document::Fields do
     context "with a name and a type" do
       
       before do
-        BlankSlate.field(:testing_float, Float)
+        class TestingFloat < BlankSlate; field :testing_float, Float; end
       end
       
       it "adds the typed field to the class" do
-        BlankSlate.fields[:testing_float].should be_kind_of(MongoODM::Document::Fields::Field)
-        BlankSlate.fields[:testing_float].type.should == Float
+        TestingFloat.fields[:testing_float].should be_kind_of(MongoODM::Document::Fields::Field)
+        TestingFloat.fields[:testing_float].type.should == Float
       end
       
     end
@@ -41,51 +37,37 @@ describe MongoODM::Document::Fields do
 
     context "on classes without defined fields" do
       
-      before do
-        @klass = BlankSlate
-      end
-      
       it "returns an empty hash" do
-        @klass.fields.should == {}
+        BlankSlate.fields.should == {}
       end
       
     end
     
     context "on parent classes" do
       
-      before do
-        @klass = Shape
-      end
-      
       it "returns a hash with the defined fields" do
-        expected_fields = [:x, :y, :color]
-        expected_fields.each do |field_name|
-          @klass.fields[field_name].should be_kind_of(MongoODM::Document::Fields::Field)
+        [:x, :y, :color].each do |field_name|
+          Shape.fields[field_name].should be_kind_of(MongoODM::Document::Fields::Field)
         end
       end
       
       it "allows indifferent access to the hash" do
-        @klass.fields[:x].should == @klass.fields["x"]
+        Shape.fields[:x].should == Shape.fields["x"]
       end
       
     end
     
     context "on subclasses" do
       
-      before do
-        @klass = BigRedCircle
-      end
-      
       it "returns all the fields defined on the class and its subclasses" do
-        expected_fields = [:x, :y, :radius, :color]
-        expected_fields.each do |field_name|
-          @klass.fields[field_name].should be_kind_of(MongoODM::Document::Fields::Field)
+        [:x, :y, :radius, :color].each do |field_name|
+          BigRedCircle.fields[field_name].should be_kind_of(MongoODM::Document::Fields::Field)
         end
       end
       
       it "overrides field descriptions on any parent class" do
-        @klass.fields[:color].default.should == "red"
-        @klass.fields[:radius].default.should == 20.0
+        BigRedCircle.fields[:color].default.should == "red"
+        BigRedCircle.fields[:radius].default.should == 20.0
       end
       
     end
@@ -176,7 +158,7 @@ describe MongoODM::Document::Fields::Field do
         @field = MongoODM::Document::Fields::Field.new(:invalid, InvalidClass)
       end
       
-      it "returns the raw value" do
+      it "raises MongoODM::Errors::TypeCastMissing" do
         lambda { @field.type_cast("whatever") }.should raise_error(MongoODM::Errors::TypeCastMissing)
       end
       

@@ -2,8 +2,31 @@
 require "spec_helper"
 
 describe MongoODM do
-  
-  describe "included modules" do
+
+  describe "#config" do
+    
+    context "when no configuration was passed" do
+      it "returns an empty hash" do
+        MongoODM.config.should == {}
+      end
+      
+    end
+    
+    context "when a custom configuration was passed" do
+      
+      before do
+        MongoODM.config = {:host => "localhost", :port => 9000}
+      end
+      
+      after do
+        MongoODM.config = {}
+      end
+      
+      it "should return the configuration as a hash" do
+        MongoODM.config.should == {:host => "localhost", :port => 9000}
+      end
+      
+    end
     
   end
   
@@ -51,34 +74,6 @@ describe MongoODM do
       MongoODM.connection = connection
       connection.should == MongoODM.connection
     end
-  end
-
-  describe "#config" do
-    
-    context "when no configuration was passed" do
-      
-      it "returns an empty hash" do
-        MongoODM.config.should == {}
-      end
-      
-    end
-    
-    context "when a custom configuration was passed" do
-      
-      before do
-        MongoODM.config = {:host => "localhost", :port => 9000}
-      end
-      
-      after do
-        MongoODM.config = {}
-      end
-      
-      it "should return the configuration as a hash" do
-        MongoODM.config.should == {:host => "localhost", :port => 9000}
-      end
-      
-    end
-    
   end
 
 end

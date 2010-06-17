@@ -11,6 +11,7 @@ module MongoODM
   include ActiveSupport::Configurable
 
   autoload :VERSION
+  autoload :Criteria
   autoload :Cursor
   autoload :Collection
   autoload :Document
@@ -34,15 +35,12 @@ module MongoODM
   end
   
   def self.instanciate(value)
-    return nil if value.nil?
-    return instanciate_doc(value) if value.is_a?(Hash)
-    return value if value.class.included_modules.include?(MongoODM::Document)
+    return value if value.is_a?(MongoODM::Document)
+    if value.is_a?(Hash)
+      klass = value["_class"] || value[:_class]
+      return klass.constantize.new(value) if klass
+    end
     value.class.type_cast(value.to_mongo)
-  end
-  
-  def self.instanciate_doc(doc)
-    return doc if doc["_class"].nil?
-    doc["_class"].constantize.new(doc)
   end
 
 end

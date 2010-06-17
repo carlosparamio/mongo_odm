@@ -49,7 +49,7 @@ module MongoODM
       
         def to_mongo
           attributes.inject({}.with_indifferent_access) do |attrs, (key, value)|
-            attrs[key] = value.to_mongo unless value.nil?
+            attrs[key] = value.to_mongo unless value.nil? # self.class.fields[key].default == value
             attrs
           end
         end
@@ -57,7 +57,11 @@ module MongoODM
     
       module ClassMethods
         def collection
-          @collection ||= MongoODM::Collection.new(MongoODM.database, name.tableize)
+          @collection ||= if self.superclass.included_modules.include?(MongoODM::Document)
+                            self.superclass.collection
+                          else
+                            MongoODM::Collection.new(MongoODM.database, name.tableize)
+                          end
         end
       
         def set_collection(name_or_collection)
@@ -69,6 +73,10 @@ module MongoODM
                         else
                           raise "MongoODM::Collection instance or valid collection name required"
                         end
+        end
+        
+        def find(*args)
+          MongoODM::Criteria.new(collection, *args)
         end
         
         def destroy_all(*args)
@@ -86,7 +94,7 @@ module MongoODM
 
         extend Forwardable
         def_delegators :collection, :db, :hint, :hint=, :pk_factory, :[], :count, :create_index, :distinct,
-                       :drop, :drop_index, :drop_indexes, :find, :find_and_modify, :find_one, :group,
+                       :drop, :drop_index, :drop_indexes, :find_and_modify, :find_one, :group,
                        :index_information, :insert, :<<, :map_reduce, :mapreduce, :options, :remove, :rename,
                        :save, :stats, :update
       end

@@ -4,7 +4,7 @@ module MongoODM
   class Cursor < Mongo::Cursor  
     def next_document
       doc = super
-      MongoODM.instanciate_doc(doc)
+      MongoODM.instanciate(doc)
     end
   end
 

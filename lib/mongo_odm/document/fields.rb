@@ -23,9 +23,9 @@ module MongoODM
         # @param [Hash] options configuration options.
         # @option options [Object, Proc] :default (nil) a default value for the field, or a lambda to evaluate when providing the default.
         def initialize(name, type, options = {})
-          @options = options.to_options
           @name = name.to_sym
           @type = type
+          @options = options.to_options
         end
 
         # @return [Object] The default value for this field if defined, or nil.

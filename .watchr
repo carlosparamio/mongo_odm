@@ -7,7 +7,7 @@ def run(cmd)
 end
 
 def spec(file)
-  run "spec -O spec/spec.opts #{file}"
+  run "spec #{file}"
 end
 
 watch("spec/.*/*_spec\.rb") do |match|

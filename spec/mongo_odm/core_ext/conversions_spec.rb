@@ -12,22 +12,26 @@ describe "Conversions" do
       end
       
       it "tries to convert any other value to an array" do
-        Array.type_cast({:a => 1, :b => 2}).should == [[:a, 1], [:b, 2]]
         Array.type_cast([1, 2]).should == [1, 2]
+        Array.type_cast({:a => 1, :b => 2}).should == [[:a, 1], [:b, 2]]
+      end
+      
+      it "tries to instantiate each of its values, recursively" do
+        Array.type_cast([3.1415, {"_class" => "Shape", "x" => 2.0, "y" => 3.0 } ]).should == [3.1415, Shape.new(:x => 2.0, :y => 3.0)]
+        Array.type_cast(["test", [ {"_class" => "Shape", "x" => 2.0, "y" => 3.0 } ]]).should == ["test", [ Shape.new(:x => 2.0, :y => 3.0) ]]
       end
 
     end
 
     describe "#to_mongo" do
 
-      it "tries to instanciate each of its elements sending MongoODM.instanciate to its classes" do
+      it "tries to convert each of its elements to valid BSON" do
         num = 1
         float = 2.3
         string = "test"
         time = Time.now
         klass = Shape.new
-        [num, float, string, time, klass].each{|i| i.should_receive(:to_mongo).once }
-        [num, float, string, time, klass].to_mongo
+        [num, float, string, time, klass].to_mongo.should == [1, 2.3, "test", time.utc, {"_class"=>"Shape", "x"=>1.0, "y"=>1.0}]
       end
       
     end
@@ -368,6 +372,12 @@ describe "Conversions" do
       
       it "tries to convert any other value to a hash" do
         Hash.type_cast({:a => 1}).should == {:a => 1}
+      end
+      
+      it "tries to instantiate each of its keys and values, recursively" do
+        result = Hash.type_cast({"_class" => "Circle", "x" => 2.0, "y" => 3.0, "radius" => 5.0 } => { "test" => {"_class" => "Shape", "x" => 2.0, "y" => 3.0 }} )
+        result.keys.first.should == Circle.new(:x => 2.0, :y => 3.0, :radius => 5.0)
+        result.values.first.values.first.should == Shape.new(:x => 2.0, :y => 3.0)
       end
       
     end
