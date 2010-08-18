@@ -249,3 +249,9 @@ All the dirty object methods defined in ActiveModel::Dirty are included
 = Copyright
 
 Copyright © 2010 Carlos Paramio. See LICENSE for details.
+
+= Credits
+
+Carlos Paramio
+
+http://h1labs.com

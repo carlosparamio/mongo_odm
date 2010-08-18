@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Carlos Paramio"]
-  s.date = %q{2010-06-15}
+  s.date = %q{2010-06-17}
   s.description = %q{mongo_odm is a flexible persistence module for any Ruby class to MongoDB.}
   s.email = %q{carlos@evolve.st}
   s.extra_rdoc_files = [
@@ -32,6 +32,7 @@ Gem::Specification.new do |s|
      "lib/mongo_odm/document/associations/has_one.rb",
      "lib/mongo_odm/document/attribute_methods.rb",
      "lib/mongo_odm/document/attribute_methods/dirty.rb",
+     "lib/mongo_odm/document/attribute_methods/inspect.rb",
      "lib/mongo_odm/document/attribute_methods/localization.rb",
      "lib/mongo_odm/document/attribute_methods/query.rb",
      "lib/mongo_odm/document/attribute_methods/read.rb",
