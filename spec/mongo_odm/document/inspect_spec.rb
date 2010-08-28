@@ -19,7 +19,7 @@ describe MongoODM::Document::Inspect do
   describe "#inspect" do
     it "returns a string with the name of the class that includes the MongoODM::Document module and a list of its attributes with values" do
       circle = Circle.new(:x => 10, :y => 12.5, :radius => 1.2)
-      circle.inspect.should == "#<Circle x: 10.0, y: 12.5, color: nil, radius: 1.2>"
+      circle.inspect.should == "#<Circle color: nil, radius: 1.2, x: 10.0, y: 12.5>"
     end
   end
   

@@ -4,14 +4,16 @@ Flexible persistence module for any Ruby class to MongoDB.
 
 = Why another ODM for MongoDB?
 
-MongoMapper, Mongoid, and others, are amazing projects. But I still think it's too much for an ODM for MongoDB.
-The Mongo Ruby driver allows you to query the database with a nice interface, the only required thing is a way to instanciate
-the results as objects of predefined classes, so you can encapsulate all the logic under a particular class and don't have to
-worry about type conversions.
-
+ * Fully compatible with Rails 3
+ * Use the Mongo ruby driver when possible (query syntax, cursors, indexes management...)
+ * No association methods (for now): Just declare your own methods on models to fetch related items
+ * Give support for dirty objects, validations, etc. through ActiveModel 3
+ * Automanage type conversions and default values
+ * Keep it as simple as possible
+ 
 = Basics
 
-A piece of code is better than a hundred words:
+A piece of code is better than a hundred of words:
 
   class Shape
     include MongoODM::Document
@@ -32,8 +34,7 @@ A piece of code is better than a hundred words:
   #   "name"   : "Point"
   # }
   
-  class Circle < Shape
-    set_collection :shapes # Because we don't want them to be saved on a separated collection
+  class Circle < Shape # This items are stored on the 'shapes' collection
     field :radius, Float, :default => 1.0
   end
   

@@ -14,19 +14,6 @@ require 'active_support/core_ext/time/conversions'
 #  * An attribute of the same class is sent to the Mongo driver
 
 # @private
-class Mongo::ObjectID
-  def self.type_cast(value)
-    return nil if value.nil?
-    return value if value.is_a?(Mongo::ObjectID)
-    value.to_s
-  end
-  
-  def to_mongo
-    self
-  end
-end
-
-# @private
 class BSON::ObjectID
   def self.type_cast(value)
     return nil if value.nil?
@@ -66,8 +53,12 @@ end
 # @private
 class Symbol
   def self.type_cast(value)
-    return nil if value.nil?
-    value.to_s.intern
+    case value
+      when nil then nil
+      when Symbol then value
+      when String then value.intern
+      else value.inspect.intern
+    end
   end
   
   def to_mongo
@@ -114,8 +105,11 @@ end
 # @private
 class String
   def self.type_cast(value)
-    return nil if value.nil?
-    value.to_s
+    case value
+      when nil then nil
+      when String, Symbol then value.to_s
+      else value.inspect
+    end
   end
   
   def to_mongo

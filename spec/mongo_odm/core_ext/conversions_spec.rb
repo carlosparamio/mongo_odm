@@ -3,6 +3,10 @@ require "spec_helper"
 
 describe "Conversions" do
   
+  before do
+    Time.zone = 'UTC'
+  end
+  
   describe Array do
 
     describe ".type_cast" do
@@ -74,6 +78,8 @@ describe "Conversions" do
       
       it "tries to convert any other value to a symbol" do
         Symbol.type_cast("test").should == :test
+        Symbol.type_cast(1).should == :"1"
+        Symbol.type_cast(3.14).should == :"3.14"
         Symbol.type_cast([1, 2]).should == :"[1, 2]"
         Symbol.type_cast({:a => 1, :b => 2}).should == :"{:a=>1, :b=>2}"
       end
@@ -199,13 +205,13 @@ describe "Conversions" do
   describe Date do
     
     describe ".type_cast" do
-      
+            
       it "returns nil when called with nil" do
         Date.type_cast(nil).should == nil
       end
       
       it "tries to convert any other value to a date" do
-        Date.type_cast("1/2/1980").should == Date.new(1980, 2, 1)
+        Date.type_cast("2/1/1980").should == Date.new(1980, 1, 2)
       end
       
     end
@@ -229,8 +235,8 @@ describe "Conversions" do
         DateTime.type_cast(nil).should == nil
       end
       
-      it "tries to convert any other value to a date" do
-        DateTime.type_cast("1/2/1980 11:30").should == DateTime.new(1980, 2, 1, 11, 30)
+      it "tries to convert any other value to a datetime" do
+        DateTime.type_cast("2/1/1980 11:30").should == DateTime.new(1980, 1, 2, 11, 30)
       end
       
     end
@@ -306,8 +312,8 @@ describe "Conversions" do
         Time.type_cast(nil).should == nil
       end
       
-      it "tries to convert any other value to a date" do
-        Time.type_cast("1/2/1980 11:30").should == Time.utc(1980, 2, 1, 11, 30)
+      it "tries to convert any other value to a timestamp" do
+        Time.type_cast("2/1/1980 11:30").should == Time.utc(1980, 1, 2, 11, 30)
       end
       
     end

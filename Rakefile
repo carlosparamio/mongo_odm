@@ -15,7 +15,7 @@ if Gem.available? 'jeweler'
     gemspec.authors = ["Carlos Paramio"]
     gemspec.files =  FileList["[A-Z]*", "{lib,spec}/**/*"]
     gemspec.version = MongoODM::VERSION
-    bundle = Bundler::Definition.from_gemfile('Gemfile')
+    bundle = Bundler.definition
     bundle.dependencies.each do |dependency|
       if dependency.groups.include?(:default)
         gemspec.add_dependency(dependency.name, dependency.requirement.to_s)

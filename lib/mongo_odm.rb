@@ -8,7 +8,6 @@ require 'active_model'
 module MongoODM
 
   extend ActiveSupport::Autoload
-  include ActiveSupport::Configurable
 
   autoload :VERSION
   autoload :Criteria
@@ -29,9 +28,13 @@ module MongoODM
     connection.db(config[:database] || 'test')
   end
   
+  def self.config
+    @_config ||= {}
+  end
+  
   def self.config=(value)
     self.connection = nil
-    super
+    @_config = value
   end
   
   def self.instanciate(value)
