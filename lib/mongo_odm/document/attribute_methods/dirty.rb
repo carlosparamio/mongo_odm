@@ -39,7 +39,7 @@ module MongoODM
       
           def reload_with_dirty(*args)
             reload_without_dirty(*args).tap do
-              previously_changed_attributes.clear
+              @previously_changed = nil
               changed_attributes.clear
             end
           end

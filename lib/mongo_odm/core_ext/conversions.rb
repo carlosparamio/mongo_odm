@@ -14,11 +14,11 @@ require 'active_support/core_ext/time/conversions'
 #  * An attribute of the same class is sent to the Mongo driver
 
 # @private
-class BSON::ObjectID
+class BSON::ObjectId
   def self.type_cast(value)
     return nil if value.nil?
-    return value if value.is_a?(BSON::ObjectID)
-    value.to_s
+    return value if value.is_a?(BSON::ObjectId)
+    BSON::ObjectId(value)
   end
   
   def to_mongo

@@ -23,7 +23,7 @@ module MongoODM
       
         # Save a document to its collection.
         #
-        # @return [ObjectID] the _id of the saved document.
+        # @return [ObjectId] the _id of the saved document.
         #
         # @option opts [Boolean] :safe (+false+) 
         #   If true, check that the save succeeded. OperationFailure
@@ -48,7 +48,7 @@ module MongoODM
         end
       
         def to_mongo
-          attributes.inject({}.with_indifferent_access) do |attrs, (key, value)|
+          attributes.inject({}) do |attrs, (key, value)|
             attrs[key] = value.to_mongo unless value.nil? # self.class.fields[key].default == value
             attrs
           end

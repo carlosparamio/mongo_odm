@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{mongo_odm}
-  s.version = "0.1.9"
+  s.version = "0.2.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Carlos Paramio"]
-  s.date = %q{2010-06-17}
+  s.date = %q{2010-08-29}
   s.description = %q{mongo_odm is a flexible persistence module for any Ruby class to MongoDB.}
   s.email = %q{carlos@evolve.st}
   s.extra_rdoc_files = [
@@ -18,6 +18,7 @@ Gem::Specification.new do |s|
   ]
   s.files = [
     "Gemfile",
+     "Gemfile.lock",
      "LICENSE",
      "README.rdoc",
      "Rakefile",
@@ -100,39 +101,39 @@ Gem::Specification.new do |s|
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<activesupport>, ["= 3.0.0.beta3"])
-      s.add_runtime_dependency(%q<activemodel>, ["= 3.0.0.beta3"])
-      s.add_runtime_dependency(%q<mongo>, ["~> 1.0.2"])
-      s.add_runtime_dependency(%q<bson_ext>, ["~> 1.0.1"])
-      s.add_runtime_dependency(%q<tzinfo>, ["~> 0.3.22"])
-      s.add_development_dependency(%q<jeweler>, ["= 1.4.0"])
-      s.add_development_dependency(%q<yard>, ["= 0.5.6"])
-      s.add_development_dependency(%q<rcov>, ["= 0.9.8"])
-      s.add_development_dependency(%q<rspec>, ["= 2.0.0.beta.12"])
-      s.add_development_dependency(%q<watchr>, ["~> 0.6"])
+      s.add_runtime_dependency(%q<activesupport>, ["~> 3.0.0.rc2"])
+      s.add_runtime_dependency(%q<activemodel>, ["~> 3.0.0.rc2"])
+      s.add_runtime_dependency(%q<mongo>, ["~> 1.0.8"])
+      s.add_runtime_dependency(%q<bson_ext>, ["~> 1.0.5"])
+      s.add_runtime_dependency(%q<tzinfo>, ["~> 0.3.23"])
+      s.add_development_dependency(%q<jeweler>, ["~> 1.4.0"])
+      s.add_development_dependency(%q<yard>, ["~> 0.5.8"])
+      s.add_development_dependency(%q<rcov>, ["~> 0.9.8"])
+      s.add_development_dependency(%q<rspec>, ["~> 2.0.0.beta.20"])
+      s.add_development_dependency(%q<watchr>, ["~> 0.7"])
     else
-      s.add_dependency(%q<activesupport>, ["= 3.0.0.beta3"])
-      s.add_dependency(%q<activemodel>, ["= 3.0.0.beta3"])
-      s.add_dependency(%q<mongo>, ["~> 1.0.2"])
-      s.add_dependency(%q<bson_ext>, ["~> 1.0.1"])
-      s.add_dependency(%q<tzinfo>, ["~> 0.3.22"])
-      s.add_dependency(%q<jeweler>, ["= 1.4.0"])
-      s.add_dependency(%q<yard>, ["= 0.5.6"])
-      s.add_dependency(%q<rcov>, ["= 0.9.8"])
-      s.add_dependency(%q<rspec>, ["= 2.0.0.beta.12"])
-      s.add_dependency(%q<watchr>, ["~> 0.6"])
+      s.add_dependency(%q<activesupport>, ["~> 3.0.0.rc2"])
+      s.add_dependency(%q<activemodel>, ["~> 3.0.0.rc2"])
+      s.add_dependency(%q<mongo>, ["~> 1.0.8"])
+      s.add_dependency(%q<bson_ext>, ["~> 1.0.5"])
+      s.add_dependency(%q<tzinfo>, ["~> 0.3.23"])
+      s.add_dependency(%q<jeweler>, ["~> 1.4.0"])
+      s.add_dependency(%q<yard>, ["~> 0.5.8"])
+      s.add_dependency(%q<rcov>, ["~> 0.9.8"])
+      s.add_dependency(%q<rspec>, ["~> 2.0.0.beta.20"])
+      s.add_dependency(%q<watchr>, ["~> 0.7"])
     end
   else
-    s.add_dependency(%q<activesupport>, ["= 3.0.0.beta3"])
-    s.add_dependency(%q<activemodel>, ["= 3.0.0.beta3"])
-    s.add_dependency(%q<mongo>, ["~> 1.0.2"])
-    s.add_dependency(%q<bson_ext>, ["~> 1.0.1"])
-    s.add_dependency(%q<tzinfo>, ["~> 0.3.22"])
-    s.add_dependency(%q<jeweler>, ["= 1.4.0"])
-    s.add_dependency(%q<yard>, ["= 0.5.6"])
-    s.add_dependency(%q<rcov>, ["= 0.9.8"])
-    s.add_dependency(%q<rspec>, ["= 2.0.0.beta.12"])
-    s.add_dependency(%q<watchr>, ["~> 0.6"])
+    s.add_dependency(%q<activesupport>, ["~> 3.0.0.rc2"])
+    s.add_dependency(%q<activemodel>, ["~> 3.0.0.rc2"])
+    s.add_dependency(%q<mongo>, ["~> 1.0.8"])
+    s.add_dependency(%q<bson_ext>, ["~> 1.0.5"])
+    s.add_dependency(%q<tzinfo>, ["~> 0.3.23"])
+    s.add_dependency(%q<jeweler>, ["~> 1.4.0"])
+    s.add_dependency(%q<yard>, ["~> 0.5.8"])
+    s.add_dependency(%q<rcov>, ["~> 0.9.8"])
+    s.add_dependency(%q<rspec>, ["~> 2.0.0.beta.20"])
+    s.add_dependency(%q<watchr>, ["~> 0.7"])
   end
 end
 

@@ -6,10 +6,13 @@ Flexible persistence module for any Ruby class to MongoDB.
 
  * Fully compatible with Rails 3
  * Use the Mongo ruby driver when possible (query syntax, cursors, indexes management...)
- * No association methods (for now): Just declare your own methods on models to fetch related items
+ * Allow lazy loading of collections and queries nesting (concatenation of 'find' calls) to emulate ActiveRecord 3
+ * No association methods (for now): Just declare your own methods on models to fetch the related items
  * Give support for dirty objects, validations, etc. through ActiveModel 3
  * Automanage type conversions and default values
  * Keep it as simple as possible
+ 
+Other Mongo ODMs don't require to explicitly define the possible schema of a model. I think this is necessary to help with type conversions (instanciate the right class for each attribute, and convert them to a Mongo compatible type when persisted). But it's also possible to fill attributes with valid Mongo values without defining them as fields, and only the attributes whose values are different than the default values are stored as part of the document when saved.
  
 = Basics
 
@@ -195,10 +198,10 @@ To reference the associated objects instead of embed them, for now you need to d
 
   class Flag
     include MongoODM::Document
-    field :colors, Array
+    field :colors_ids, Array
     
     def colors
-      Color.find(:_id => {'$in' => read_attribute(:colors)})
+      Color.find(:_id => {'$in' => colors_ids})
     end
   end
 
@@ -210,18 +213,18 @@ To reference the associated objects instead of embed them, for now you need to d
   Color.new(:name => "red").save
   Color.new(:name => "green").save
 
-  flag = Flag.new(:colors => [ Color.find_one(:name => "red").id, Color.find_one(:name => "green").id ])
+  flag = Flag.new(:colors_ids => [ Color.find_one(:name => "red").id, Color.find_one(:name => "green").id ])
   flag.save
 
   # Saves:
-  # { "_id"    : ObjectId("4be96c15715dd2c4be000003"),
-  #   "_class" : "Flag",
-  #   "colors" : [ ObjectId("4be96bfe715dd2c4be000001"), ObjectId("4be96c08715dd2c4be000002") ]
+  # { "_id"        : ObjectId("4be96c15715dd2c4be000003"),
+  #   "_class"     : "Flag",
+  #   "colors_ids" : [ ObjectId("4be96bfe715dd2c4be000001"), ObjectId("4be96c08715dd2c4be000002") ]
   # }
   
   flag.colors
   
-  # Returns a cursor
+  # Returns a criteria object that wraps a cursor
   
   flag.colors.to_a
   

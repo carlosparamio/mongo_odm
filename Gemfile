@@ -3,8 +3,8 @@ source 'http://rubygems.org'
 
 gem "activesupport", "~>3.0.0.rc2"
 gem "activemodel", "~>3.0.0.rc2"
-gem "mongo", "~>1.0.7"
-gem "bson_ext", "~>1.0.4"
+gem "mongo", "~>1.0.8"
+gem "bson_ext", "~>1.0.5"
 gem "tzinfo", "~>0.3.23"
 
 group :development do
