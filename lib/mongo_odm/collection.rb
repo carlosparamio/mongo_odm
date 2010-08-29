@@ -11,15 +11,19 @@ module MongoODM
       hint   = opts.delete(:hint)
       snapshot = opts.delete(:snapshot)
       batch_size = opts.delete(:batch_size)
+
       if opts[:timeout] == false && !block_given?
         raise ArgumentError, "Timeout can be set to false only when #find is invoked with a block."
+      else
+        timeout = opts.delete(:timeout) || false
       end
-      timeout = block_given? ? (opts.delete(:timeout) || true) : true
+
       if hint
         hint = normalize_hint_fields(hint)
       else
         hint = @hint        # assumed to be normalized already
       end
+
       raise RuntimeError, "Unknown options [#{opts.inspect}]" unless opts.empty?
 
       cursor = MongoODM::Cursor.new(self, :selector => selector, :fields => fields, :skip => skip, :limit => limit,
@@ -31,6 +35,10 @@ module MongoODM
       else
         cursor
       end
+    end
+    
+    def find_and_modify(opts = {})
+      MongoODM.instanciate(super)
     end
     
     def insert(doc_or_docs, options={})
