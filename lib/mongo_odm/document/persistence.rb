@@ -76,7 +76,7 @@ module MongoODM
         end
         
         def find(*args)
-          MongoODM::Criteria.new(collection, *args)
+          MongoODM::Criteria.new(self, *args)
         end
         
         def destroy_all(*args)

@@ -69,8 +69,20 @@ to have the attribute "_class" set to the name of the class you want to use as t
 And because any query method returns a MongoODM::Criteria object, you can concatenate them to nest several conditions (like if they were ActiveRecord scopes):
 
   Shape.find(:radius => 1).find({}, {:sort => [:color, :asc]}) # Returns a criteria object. Once you iterate over it, it will run a query with both the :radius selector and :sort order.
+  
+You can also define your own class methods that returns criteria objects, and concatenate them to obtain a single criteria with all the conditions merged in the calls order:
 
-In a near future, you will be able to define each find on a separated class method, and concatenate them by using those method calls (like 'with_radius(n).ordered_by_color').
+  class Shape
+    def self.with_radius(n)
+      find(:radius => n)
+    end
+    
+    def self.ordered_by_color
+      find({}, {:sort => [:color, :asc]})
+    end
+  end
+  
+  Shape.with_radius(1).ordered_by_color # Returns the same criteria than the previous example
 
 Take a look at the Mongo Ruby driver documentation for the 'find' method to see the available options:
 
