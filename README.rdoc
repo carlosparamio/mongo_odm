@@ -51,8 +51,9 @@ A piece of code is better than a hundred of words:
   #   "color"  : null,
   #   "radius" : 1 }
 
-  all_shapes = Shape.find.to_a
-  
+  all_shapes = Shape.find # Returns a criteria object. It will execute the query and instance the objects once you iterate over it
+
+  all_shapes.to_a
   # Returns all the shapes; notice they are of different classes:
   # [ #<Shape x: 0.0, y: 5.0, color: nil, name: "Point", _id: {"$oid"=>"4be97178715dd2c4be000006"}>,
   #   #<Circle x: 1.0, y: 1.0, color: nil, radius: 1.0, _id: {"$oid"=>"4be97293715dd2c4be000008"}> ]
@@ -64,6 +65,16 @@ to have the attribute "_class" set to the name of the class you want to use as t
 
   # Returns:
   # #<Circle x: 12.0, y: 5.0, color: nil, radius: 1.0>
+
+And because any query method returns a MongoODM::Criteria object, you can concatenate them to nest several conditions (like if they were ActiveRecord scopes):
+
+  Shape.find(:radius => 1).find({}, {:sort => [:color, :asc]}) # Returns a criteria object. Once you iterate over it, it will run a query with both the :radius selector and :sort order.
+
+In a near future, you will be able to define each find on a separated class method, and concatenate them by using those method calls (like 'with_radius(n).ordered_by_color').
+
+Take a look at the Mongo Ruby driver documentation for the 'find' method to see the available options:
+
+http://api.mongodb.org/ruby/1.0.8/Mongo/Collection.html#find-instance_method
 
 = Associations
 
@@ -235,20 +246,67 @@ To reference the associated objects instead of embed them, for now you need to d
 
 For now, the available callbacks are: after_initialize, before_save, after_save
 
+Example:
+
+  class User
+    include MongoODM::Document
+
+    field :encrypted_password
+    attr_accessor :password
+    
+    before_save :encrypt_password
+    
+    def encrypt_password
+      return if self.password.blank?
+      self.encrypted_password = encrypt(password)
+    end
+    protected :encrypt_password
+  end
+
 = Validations
 
 All the validation methods defined in ActiveModel::Validations are included
+
+Example:
+
+  class User
+    field :email
+    
+    validates_presence_of :email
+    validates_uniqueness_of :email, :case_sensitive => false
+    validates_format_of :email, :with => /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/
+  end
 
 = Dirty
 
 All the dirty object methods defined in ActiveModel::Dirty are included
 
+Example:
+
+  class User
+    field :email
+  end
+  
+  user = User.new
+  user.email = "hello@h1labs.com"
+  user.email_changed? # Returns true
+  user.email_change # Returns [nil, "hello@h1labs.com"]
+  user.changes # Returns {"email" => [nil, "hello@h1labs.com"]}
+
 = TODO
 
+ * Support join of different concatenated find calls to a single criteria object
  * Add helpers to define attributes as referenced objects
+ * Allow to specify different database connections with each document definition
  * Increase rspec coverage
  * Document, document, document!
  * Create useful modules to make common operations easier (versioning, localization, etc)
+
+= More
+
+For now, take a look at the Mongo Ruby driver syntax:
+
+http://api.mongodb.org/ruby/1.0.8/index.html
 
 = Copyright
 
