@@ -18,7 +18,8 @@ Other Mongo ODMs don't require to explicitly define the possible schema of a mod
 
 A piece of code is better than a hundred of words:
 
-  MongoODM.config = {:host => 'localhost', :port => 27017, :database => "my_tests"} # Establish connection
+  # Establish connection; it uses localhost:27017 and database 'test' if not specified
+  MongoODM.config = {:host => 'localhost', :port => 27017, :database => "my_tests"}
 
   class Shape
     include MongoODM::Document
@@ -89,6 +90,20 @@ You can also define your own class methods that returns criteria objects, and co
 Take a look at the Mongo Ruby driver documentation for the 'find' method to see the available options:
 
 http://api.mongodb.org/ruby/1.0.8/Mongo/Collection.html#find-instance_method
+
+= Collections
+
+By default, mongo_odm stores data on a collection with the same name than the class, pluralized. In case of class inheritance, it uses the name of the parent class. You can override this behavior by setting a different collection for a class:
+
+  class Shape
+    set_collection 'my_shapes'
+  end
+  
+Alternatively, you can pass a MongoODM::Collection instance to set_collection, to indicate not only a collection name, but also a different connection and/or database:
+
+  class Shape
+    set_collection MongoODM::Collection.new(MongoODM.connection.db('another_database'), 'my_shapes')
+  end
 
 = Associations
 
