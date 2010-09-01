@@ -12,11 +12,13 @@ Flexible persistence module for any Ruby class to MongoDB.
  * Automanage type conversions and default values
  * Keep it as simple as possible
  
-Other Mongo ODMs don't require to explicitly define the possible schema of a model. I think this is necessary to help with type conversions (instanciate the right class for each attribute, and convert them to a Mongo compatible type when persisted). But it's also possible to fill attributes with valid Mongo values without defining them as fields, and only the attributes whose values are different than the default values are stored as part of the document when saved.
- 
 = Basics
 
+Other Mongo ODMs don't require to explicitly define the possible schema of a model. I think this is necessary to help with type conversions (instanciate the right class for each attribute, and convert them to a Mongo compatible type when persisted). But it's also possible to fill attributes with valid Mongo values without defining them as fields, and only the attributes whose values are different than the default values are stored as part of the document when saved.
+
 A piece of code is better than a hundred of words:
+
+  MongoODM.config = {:host => 'localhost', :port => 27017, :database => "my_tests"} # Establish connection
 
   class Shape
     include MongoODM::Document
