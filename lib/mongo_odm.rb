@@ -10,33 +10,34 @@ module MongoODM
   extend ActiveSupport::Autoload
 
   autoload :VERSION
+  autoload :Config
   autoload :Criteria
   autoload :Cursor
   autoload :Collection
   autoload :Document
   autoload :Errors
-  
+
   def self.connection
-    Thread.current[:mongo_odm_connection] ||= Mongo::Connection.new(config[:host], config[:port], config)
+    Thread.current[:mongo_odm_connection] ||= config.connection
   end
-  
+
   def self.connection=(value)
     Thread.current[:mongo_odm_connection] = value
   end
-  
+
   def self.database
-    connection.db(config[:database] || 'test')
+    Thread.current[:mongo_odm_database] ||= self.connection.db( config.database )
   end
-  
+
   def self.config
-    @_config ||= {}
+    @_config ||= Config.new
   end
-  
+
   def self.config=(value)
     self.connection = nil
-    @_config = value
+    @_config = (Config === value) ? value : Config.new(value)
   end
-  
+
   def self.instanciate(value)
     return value if value.is_a?(MongoODM::Document)
     if value.is_a?(Hash)

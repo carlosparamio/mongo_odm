@@ -2,39 +2,13 @@
 require "spec_helper"
 
 describe MongoODM do
-
-  describe "#config" do
-    
-    context "when no configuration was passed" do
-      it "returns an empty hash" do
-        MongoODM.config.should == {}
-      end
-      
-    end
-    
-    context "when a custom configuration was passed" do
-      
-      before do
-        MongoODM.config = {:host => "localhost", :port => 9000}
-      end
-      
-      after do
-        MongoODM.config = {}
-      end
-      
-      it "should return the configuration as a hash" do
-        MongoODM.config.should == {:host => "localhost", :port => 9000}
-      end
-      
-    end
-    
-  end
-  
   describe "#connection" do
 
     context "when connection does not exist" do
 
       before do
+        conn = Mongo::Connection.new( nil, nil, :connect => false )
+        Mongo::Connection.stub(:new).and_return(conn)
         MongoODM.connection = nil
       end
 
@@ -43,10 +17,11 @@ describe MongoODM do
       end
 
     end
-    
-    context "when connection already exists" do
 
+    context "when connection already exists" do
       before do
+        conn = Mongo::Connection.new( nil, nil, :connect => false )
+        Mongo::Connection.stub(:new).and_return(conn)
         @connection = MongoODM.connection
       end
 
@@ -61,7 +36,7 @@ describe MongoODM do
       
       it "returns a different Mongo::Connection when configuration changes" do
         MongoODM.config = {:port => 9000}
-        @connection.should_not == MongoODM.connection
+        MongoODM.connection.should_not == @connection
       end
 
     end
@@ -70,7 +45,7 @@ describe MongoODM do
 
   describe "#connection=" do
     it "accepts a Mongo::Connection instance to set the connection" do
-      connection = Mongo::Connection.new('localhost', 27017)
+      connection = Mongo::Connection.new('localhost', 27017, :connect => false)
       MongoODM.connection = connection
       connection.should == MongoODM.connection
     end
