@@ -12,6 +12,7 @@ module MongoODM
     autoload :Fields
     autoload :Inspect
     autoload :Persistence
+    autoload :Timestamps
     autoload :Validations
     autoload :Equality
 
