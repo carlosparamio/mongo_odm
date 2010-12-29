@@ -13,7 +13,7 @@ module MongoODM
         alias_method_chain :initialize, :callbacks
 
         define_model_callbacks :initialize, :only => :after
-        define_model_callbacks :save, :destroy
+        define_model_callbacks :save, :create, :update, :destroy
       end
       
       module InstanceMethods

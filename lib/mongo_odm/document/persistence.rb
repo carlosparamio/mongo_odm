@@ -34,8 +34,10 @@ module MongoODM
         #   will be raised on an error. Note that a safe check requires an extra
         #   round-trip to the database.
         def save(options = {})
-          _run_save_callbacks do
-            write_attribute(:_id, self.class.save(to_mongo, options))
+          run_callbacks(:save) do
+            run_callbacks( self.new_record? ? :create : :update )  do
+              write_attribute(:_id, self.class.save(to_mongo, options))
+            end
           end
         end
       
@@ -46,7 +48,7 @@ module MongoODM
         
         def destroy
           return false if new_record?
-          _run_destroy_callbacks do
+          run_callbacks(:destroy) do
             self.class.remove({ :_id => self.id })
           end
         end
