@@ -12,6 +12,7 @@ module MongoODM
     autoload :Fields
     autoload :Inspect
     autoload :Persistence
+    autoload :Referable
     autoload :Timestamps
     autoload :Validations
     autoload :Equality
@@ -29,6 +30,7 @@ module MongoODM
       include Document::Fields
       include Document::Inspect
       include Document::Callbacks
+      include Document::Referable
       include Document::Validations
       include Document::Equality
     end
