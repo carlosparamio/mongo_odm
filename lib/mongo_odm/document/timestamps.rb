@@ -1,7 +1,9 @@
 module MongoODM
   module Document
     module Timestamps
+
       extend ActiveSupport::Concern
+
       included do
         field :created_at, Time
         field :updated_at, Time
@@ -16,6 +18,7 @@ module MongoODM
           self.updated_at = now
         end
       end
+
     end
   end
 end
