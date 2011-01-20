@@ -5,7 +5,7 @@ module MongoODM
     attr_accessor :database, :host, :port, :username, :password
     attr_accessor :logger, :pool_size
 
-    def initialize( opts = {} )
+    def initialize(opts = {})
       from_hash opts
       @database ||= 'test'
       @host ||= 'localhost'
@@ -14,13 +14,13 @@ module MongoODM
       @pool_size ||= 1
     end
 
-    def uri=( uri )
+    def uri=(uri)
       uri = URI.parse(uri)  unless URI === uri
       @database = uri.path.to_s.sub('/', '')
       @host, @port, @username, @password = uri.host, uri.port, uri.user, uri.password
     end
 
-    def from_hash( opts )
+    def from_hash(opts)
       opts = opts.dup.symbolize_keys!
 
       if opts[:uri].present?
@@ -35,13 +35,10 @@ module MongoODM
     end
 
     def connection
-      opts = {
-        :logger => self.logger,
-        :pool_size => self.pool_size,
-      }
-      Mongo::Connection.new( self.host, self.port, opts ).tap do |conn|
+      opts = { :logger => self.logger, :pool_size => self.pool_size }
+      Mongo::Connection.new(self.host, self.port, opts).tap do |conn|
         if self.username || self.password
-          conn.add_auth( self.database, self.username, self.password )
+          conn.add_auth(self.database, self.username, self.password)
           conn.apply_saved_authentication
         end
       end

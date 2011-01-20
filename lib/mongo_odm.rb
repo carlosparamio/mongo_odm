@@ -35,7 +35,7 @@ module MongoODM
 
   def self.config=(value)
     self.connection = nil
-    @_config = (Config === value) ? value : Config.new(value)
+    @_config = value.is_a?(Config) ? value : Config.new(value)
   end
 
   def self.instanciate(value)
