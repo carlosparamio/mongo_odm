@@ -19,7 +19,7 @@ module MongoODM
       module InstanceMethods
         def initialize_with_callbacks(*args)
           initialize_without_callbacks(*args)
-          _run_initialize_callbacks
+          run_callbacks(:initialize)
           self
         end
       end

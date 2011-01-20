@@ -34,9 +34,7 @@ module MongoODM
         # Runs all the specified validations and returns true if no errors were added otherwise false.
         def valid?
           errors.clear
-
-          _run_validate_callbacks
-
+          run_callbacks(:validate)
           errors.empty?
         end
       end
