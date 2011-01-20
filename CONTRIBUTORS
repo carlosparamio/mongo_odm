@@ -1,0 +1,4 @@
+Steve Sloan
+
+* Config class, railtie to load config from YAML file
+* Timestamps module
