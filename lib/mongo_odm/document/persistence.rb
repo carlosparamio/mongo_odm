@@ -16,6 +16,10 @@ module MongoODM
         def new_record?
           id.nil?
         end
+        
+        def persisted?
+          !new_record?
+        end
       
         def reload
           self.load_attributes_or_defaults(self.class.find_one(:_id => id).attributes) unless new_record?

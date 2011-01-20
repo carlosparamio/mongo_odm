@@ -17,12 +17,12 @@ module MongoODM
 
       included do
         include ActiveModel::AttributeMethods
-        include MongoODM::Document::AttributeMethods::Read
-        include MongoODM::Document::AttributeMethods::Write
-        include MongoODM::Document::AttributeMethods::Query
-        include MongoODM::Document::AttributeMethods::Dirty
-        include MongoODM::Document::AttributeMethods::Inspect
-        include MongoODM::Document::AttributeMethods::Localization
+        include AttributeMethods::Read
+        include AttributeMethods::Write
+        include AttributeMethods::Query
+        include AttributeMethods::Dirty
+        include AttributeMethods::Inspect
+        include AttributeMethods::Localization
       end
 
       module InstanceMethods

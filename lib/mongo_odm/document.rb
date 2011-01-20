@@ -7,34 +7,29 @@ module MongoODM
     extend ActiveSupport::Concern
     extend ActiveSupport::Autoload
 
-    #autoload :Associations
     autoload :AttributeMethods
     autoload :Callbacks
     autoload :Fields
     autoload :Inspect
     autoload :Persistence
     autoload :Validations
+    autoload :Equality
 
     included do
       include ActiveModel::Conversion
-      include ActiveModel::Serializers::JSON
-      include ActiveModel::Serializers::Xml
       include ActiveModel::Observing
       include ActiveModel::Translation
-      include MongoODM::Document::Persistence
-      include MongoODM::Document::AttributeMethods
-      include MongoODM::Document::Fields
-      include MongoODM::Document::Inspect
-      #include MongoODM::Document::Associations
-      include MongoODM::Document::Callbacks
-      include MongoODM::Document::Validations
-    end
-    
-    module InstanceMethods
-      def ==(other)
-        return false unless other.is_a?(MongoODM::Document)
-        attributes == other.attributes
-      end
+
+      include ActiveModel::Serializers::JSON
+      include ActiveModel::Serializers::Xml
+
+      include Document::Persistence
+      include Document::AttributeMethods
+      include Document::Fields
+      include Document::Inspect
+      include Document::Callbacks
+      include Document::Validations
+      include Document::Equality
     end
 
   end
