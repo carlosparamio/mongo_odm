@@ -2,7 +2,7 @@
 module MongoODM
 
   class Criteria
-    delegate :to_xml, :to_yaml, :length, :collect, :map, :each, :all?, :include?, :to => :to_a
+    delegate :inspect, :to_xml, :to_yaml, :length, :collect, :map, :each, :all?, :include?, :to => :to_a
     
     def initialize(klass, selector = {}, opts = {})
       @klass, @selector, @opts = klass, selector, opts
@@ -25,10 +25,6 @@ module MongoODM
       when Array
         to_a == other.to_a
       end
-    end
-    
-    def inspect
-      to_a.inspect
     end
     
     def method_missing(method_name, *args, &block)

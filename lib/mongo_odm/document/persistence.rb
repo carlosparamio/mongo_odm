@@ -60,6 +60,11 @@ module MongoODM
       end
     
       module ClassMethods
+        delegate :collection, :db, :hint, :hint=, :pk_factory, :[], :count, :create_index, :distinct,
+                 :drop, :drop_index, :drop_indexes, :find_and_modify, :find_one, :group,
+                 :index_information, :insert, :<<, :map_reduce, :mapreduce, :options, :remove, :rename,
+                 :save, :stats, :update, :to => :collection
+        
         def collection
           @collection ||= if self.superclass.included_modules.include?(MongoODM::Document)
                             self.superclass.collection
@@ -96,11 +101,6 @@ module MongoODM
           new(value)
         end
 
-        extend Forwardable
-        def_delegators :collection, :db, :hint, :hint=, :pk_factory, :[], :count, :create_index, :distinct,
-                       :drop, :drop_index, :drop_indexes, :find_and_modify, :find_one, :group,
-                       :index_information, :insert, :<<, :map_reduce, :mapreduce, :options, :remove, :rename,
-                       :save, :stats, :update
       end
 
     end
