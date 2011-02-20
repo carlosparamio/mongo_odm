@@ -98,6 +98,10 @@ module MongoODM
           end
         end
         
+        def cursor
+          @cursor ||= find.cursor
+        end
+        
         def destroy_all(*args)
           documents = find(*args)
           count = documents.count
@@ -109,6 +113,14 @@ module MongoODM
           return nil if value.nil?
           return value if value.class == self
           new(value)
+        end
+        
+        def method_missing(method_name, *args, &block)
+          if cursor.respond_to?(method_name)
+            cursor.send(method_name, *args, &block)
+          else
+            super
+          end
         end
 
       end

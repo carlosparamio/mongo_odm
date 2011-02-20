@@ -384,6 +384,7 @@ All the validation methods defined in ActiveModel::Validations are included
 Example:
 
   class User
+    include MongoODM::Document
     field :email
     
     validates_presence_of :email
@@ -398,6 +399,7 @@ All the dirty object methods defined in ActiveModel::Dirty are included
 Example:
 
   class User
+    include MongoODM::Document
     field :email
   end
   
@@ -407,14 +409,26 @@ Example:
   user.email_change # Returns [nil, "hello@h1labs.com"]
   user.changes # Returns {"email" => [nil, "hello@h1labs.com"]}
 
+= Others
+
+Access to a cursor to the whole collection:
+
+  User.cursor
+  
+Use cursor methods directly on the class:
+
+  User.has_next?
+  User.each{...}
+  User.next_document
+  User.rewind!
+  ...
+
 = TODO
 
- * Support join of different concatenated find calls to a single criteria object
- * Add helpers to define attributes as referenced objects
  * Allow to specify different database connections with each document definition
  * Increase rspec coverage
  * Document, document, document!
- * Create useful modules to make common operations easier (versioning, localization, etc)
+ * Create useful modules to make common operations easier (versioning, trees, etc)
 
 = More
 
@@ -422,12 +436,12 @@ For now, take a look at the Mongo Ruby driver syntax:
 
 http://api.mongodb.org/ruby/1.0.8/index.html
 
-= Copyright
-
-Copyright © 2010 Carlos Paramio. See LICENSE for details.
-
 = Credits
 
-Carlos Paramio
+Carlos Paramio, http://h1labs.com.
 
-http://h1labs.com
+See CONTRIBUTORS file for a list of contributions.
+
+= License
+
+See LICENSE file for details.

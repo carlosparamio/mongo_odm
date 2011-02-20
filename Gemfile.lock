@@ -1,20 +1,14 @@
 GEM
   remote: http://rubygems.org/
   specs:
-    ZenTest (4.4.2)
     activemodel (3.0.4)
       activesupport (= 3.0.4)
       builder (~> 2.1.2)
       i18n (~> 0.4)
     activesupport (3.0.4)
-    archive-tar-minitar (0.5.2)
-    autotest (4.4.6)
-      ZenTest (>= 4.4.1)
     bson (1.2.2)
     bson_ext (1.2.2)
     builder (2.1.2)
-    columnize (0.3.2)
-    database_cleaner (0.6.3)
     diff-lcs (1.1.2)
     git (1.2.5)
     i18n (0.5.0)
@@ -22,8 +16,6 @@ GEM
       bundler (~> 1.0.0)
       git (>= 1.2.5)
       rake
-    linecache19 (0.5.11)
-      ruby_core_source (>= 0.1.4)
     mongo (1.2.2)
       bson (>= 1.2.2)
     rake (0.8.7)
@@ -36,16 +28,6 @@ GEM
     rspec-expectations (2.4.0)
       diff-lcs (~> 1.1.2)
     rspec-mocks (2.4.0)
-    ruby-debug-base19 (0.11.24)
-      columnize (>= 0.3.1)
-      linecache19 (>= 0.5.11)
-      ruby_core_source (>= 0.1.4)
-    ruby-debug19 (0.11.6)
-      columnize (>= 0.3.1)
-      linecache19 (>= 0.5.11)
-      ruby-debug-base19 (>= 0.11.19)
-    ruby_core_source (0.1.4)
-      archive-tar-minitar (>= 0.5.2)
     tzinfo (0.3.24)
     watchr (0.7)
     yard (0.6.4)
@@ -56,14 +38,11 @@ PLATFORMS
 DEPENDENCIES
   activemodel (~> 3.0.4)
   activesupport (~> 3.0.4)
-  autotest
   bson_ext (~> 1.2.2)
-  database_cleaner
   jeweler (~> 1.5.2)
   mongo (~> 1.2.2)
   rcov (~> 0.9.9)
   rspec (= 2.4.0)
-  ruby-debug19
   tzinfo (~> 0.3.24)
   watchr (~> 0.7)
   yard (~> 0.6.4)
