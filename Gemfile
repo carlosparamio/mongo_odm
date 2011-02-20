@@ -1,10 +1,10 @@
 # Use `bundle install` in order to install these gems
 source 'http://rubygems.org'
 
-gem "activesupport", "~>3.0.3"
-gem "activemodel", "~>3.0.3"
-gem "mongo", "~>1.2.0"
-gem "bson_ext", "~>1.2.0"
+gem "activesupport", "~>3.0.4"
+gem "activemodel", "~>3.0.4"
+gem "mongo", "~>1.2.2"
+gem "bson_ext", "~>1.2.2"
 gem "tzinfo", "~>0.3.24"
 
 group :development do

@@ -9,13 +9,12 @@ module MongoODM
       limit  = opts.delete(:limit) || 0
       sort   = opts.delete(:sort)
       hint   = opts.delete(:hint)
-      snapshot = opts.delete(:snapshot)
+      snapshot   = opts.delete(:snapshot)
       batch_size = opts.delete(:batch_size)
+      timeout    = (opts.delete(:timeout) == false) ? false : true
 
-      if opts[:timeout] == false && !block_given?
-        raise ArgumentError, "Timeout can be set to false only when #find is invoked with a block."
-      else
-        timeout = opts.delete(:timeout) || false
+      if timeout == false && !block_given?
+        raise ArgumentError, "Collection#find must be invoked with a block when timeout is disabled."
       end
 
       if hint
@@ -27,7 +26,8 @@ module MongoODM
       raise RuntimeError, "Unknown options [#{opts.inspect}]" unless opts.empty?
 
       cursor = MongoODM::Cursor.new(self, :selector => selector, :fields => fields, :skip => skip, :limit => limit,
-                          :order => sort, :hint => hint, :snapshot => snapshot, :timeout => timeout, :batch_size => batch_size)
+        :order => sort, :hint => hint, :snapshot => snapshot, :timeout => timeout, :batch_size => batch_size)
+
       if block_given?
         yield cursor
         cursor.close()
@@ -37,7 +37,7 @@ module MongoODM
       end
     end
     
-    def find_and_modify(opts = {})
+    def find_and_modify(*args)
       MongoODM.instanciate(super)
     end
     

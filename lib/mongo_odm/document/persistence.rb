@@ -69,7 +69,7 @@ module MongoODM
           @collection ||= if self.superclass.included_modules.include?(MongoODM::Document)
                             self.superclass.collection
                           else
-                            MongoODM::Collection.new(MongoODM.database, name.tableize)
+                            MongoODM::Collection.new(name.tableize, MongoODM.database)
                           end
         end
       
@@ -78,14 +78,20 @@ module MongoODM
                         when MongoODM::Collection
                           name_or_collection
                         when String, Symbol
-                          MongoODM::Collection.new(MongoODM.database, name_or_collection)
+                          MongoODM::Collection.new(name_or_collection, MongoODM.database)
                         else
                           raise "MongoODM::Collection instance or valid collection name required"
                         end
         end
         
         def find(*args)
-          MongoODM::Criteria.new(self, *args)
+          if args.size == 1 && args.first.is_a?(String)
+            MongoODM::Criteria.new(self, :_id => BSON::ObjectId.from_string(args.first))
+          elsif args.size == 1 && args.first.is_a?(BSON::ObjectId)
+            MongoODM::Criteria.new(self, :_id => args.first)
+          else
+            MongoODM::Criteria.new(self, *args)
+          end
         end
         
         def destroy_all(*args)
