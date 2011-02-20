@@ -1,4 +1,5 @@
 Steve Sloan
 
-* Config class, railtie to load config from YAML file
-* Timestamps module
+  * Config class, railtie to load config from YAML file
+  * Timestamps module
+  * BSON::DBRef ideas

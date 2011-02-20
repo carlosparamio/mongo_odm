@@ -46,5 +46,9 @@ module MongoODM
     end
     value.class.type_cast(value.to_mongo)
   end
+  
+  def self.dereference(value)
+    value.respond_to?(:dereference) ? value.dereference : value
+  end
 
 end

@@ -105,6 +105,33 @@ Alternatively, you can pass a MongoODM::Collection instance to set_collection, t
     set_collection MongoODM::Collection.new(MongoODM.connection.db('another_database'), 'my_shapes')
   end
 
+= References
+
+You can use BSON::DBRef as the type of a field. This acts as a pointer to any other document in your database, at any collection. If you assign a MongoODM::Document instance to a BSON::DBRef field, it will be converted to a reference automatically. To instantiate any reference object, just call "dereference" on it. To convert any MongoODM::Document object to a reference, just call "to_dbref" on it.
+
+You can even dereference a full array or hash that contains BSON::DBRef instances! It will dereference them at any level.
+
+  class Node
+    include MongoODM::Document
+    field :name
+    field :parent, BSON::DBRef
+    field :children, Array
+  end
+  
+  root_node = Node.new(:name => 'root')
+  root_node.save
+  children1 = Node.new(:name => 'children1', :parent => root_node)
+  children1.save
+  root_node.children = [children1.to_dbref]
+  root_node.save
+
+  children1.parent   # Returns BSON::DBRef(namespace:"nodes", id: "4d60e8c83f5f19cf08000001")
+  root_node.children # Returns [BSON::DBRef(namespace:"nodes", id: "4d60e8c83f5f19cf08000002")]
+
+  children1.parent.dereference # Returns #<Node _id: BSON::ObjectId('4d60e8c83f5f19cf08000001'), children: [BSON::DBRef(namespace:"nodes", id: "4d60e8c83f5f19cf08000002")], name: "root", parent: nil>
+
+  root_node.children.dereference # Returns [#<Node _id: BSON::ObjectId('4d60e8c83f5f19cf08000002'), children: nil, name: "children1", parent: BSON::DBRef(namespace:"nodes", id: "4d60e8c83f5f19cf08000001")>]
+
 = Associations
 
 To embed just one copy of another class, just define the field type of that class. The class just need to respond to the "type_cast" class method and the "to_mongo" instance method. Example:
@@ -234,7 +261,65 @@ If you want to save a collection of objects, just define the field as an Array. 
   # #<Draw objects: [#<Circle x: 1.0, y: 1.0, color: nil, radius: 10.0>, #<Line x: 0.0, y: 0.0, color: nil, dx: 10.0, dy: 5.0>, #<Circle x: 2.0, y: 2.0, color: nil, radius: 20.0>], _id: {"$oid"=>"4bf0775d715dd2725a000001"}>
 
 
-To reference the associated objects instead of embed them, for now you need to define your own methods. Example:
+To reference the associated objects instead of embed them, you can use BSON::DBRef (to reference one), Array (to reference several), and others:
+
+  class Flag
+    include MongoODM::Document
+    field :colors_refs, Array, :default => []
+    
+    def add_color(color)
+      colors_refs << color.to_dbref
+    end
+    
+    def colors
+      colors_refs.dereference
+    end
+  end
+
+  class Color
+    include MongoODM::Document
+    field :name
+  end
+
+  color_red = Color.new(:name => "red")
+  color_red.save
+  color_green = Color.new(:name => "green")
+  color_green.save
+
+  flag = Flag.new
+  flag.add_color(color_red)
+  flag.add_color(color_green)
+  flag.save
+
+  # Saves:
+  # { "_id"         : ObjectId("4be96c15715dd2c4be000003"),
+  #   "_class"      : "Flag",
+  #   "colors_refs" : [ 
+  #                     { "$ns" : "colors",
+  #                       "$id" : { 
+  #                         "$oid" : "4d60ea4e3f5f19cf10000001"
+  #                        }
+  #                     },
+  #                     { "$ns" : "colors",
+  #                       "$id" : {
+  #                         "$oid" : "4d60ea4e3f5f19cf10000002"
+  #                       }
+  #                     } 
+  #                   ]
+  # }
+  
+  flag.colors # Returns [#<Color _id: BSON::ObjectId('4d60ea4e3f5f19cf10000001'), name: "red">, #<Color _id: BSON::ObjectId('4d60ea4e3f5f19cf10000002'), name: "green">]
+  
+  flag.colors
+  
+  # Returns a criteria object that wraps a cursor
+  
+  flag.colors.to_a
+  
+  # Returns:
+  # [#<Color name: "red", _id: {"$oid"=>"4be96bfe715dd2c4be000001"}>, #<Color name: "green", _id: {"$oid"=>"4be96c08715dd2c4be000002"}>]
+
+Or you can build your custon methods. Example:
 
   class Flag
     include MongoODM::Document
