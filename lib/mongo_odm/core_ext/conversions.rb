@@ -205,7 +205,7 @@ end
 
 # Stand-in for true/false property types.
 # @private
-module Boolean
+class Boolean
   def self.type_cast(value)
     case value
     when NilClass
