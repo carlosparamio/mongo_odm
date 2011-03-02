@@ -13,6 +13,12 @@ module MongoODM
         super "can't localize field #{field_name}; it has to be declared as a Hash, was #{klass}"
       end
     end
+
+    class DocumentNotFound < StandardError
+      def initialize(ids, klass)
+        super "can't find document for class #{klass} with id(s) #{ids}"
+      end
+    end
   end
 
 end
