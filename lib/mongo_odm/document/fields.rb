@@ -30,7 +30,8 @@ module MongoODM
 
         # @return [Object] The default value for this field if defined, or nil.
         def default
-          if default = options[:default]
+          if options.has_key?(:default)
+            default = options[:default]
             type_cast(default.respond_to?(:call) ? default.call : default)
           end
         end
