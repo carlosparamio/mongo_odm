@@ -89,7 +89,7 @@ You can also define your own class methods that returns criteria objects, and co
 
 Take a look at the Mongo Ruby driver documentation for the 'find' method to see the available options:
 
-http://api.mongodb.org/ruby/1.0.8/Mongo/Collection.html#find-instance_method
+http://api.mongodb.org/ruby/1.2.4/Mongo/Collection.html#find-instance_method
 
 = Collections
 
@@ -434,7 +434,7 @@ Use cursor methods directly on the class:
 
 For now, take a look at the Mongo Ruby driver syntax:
 
-http://api.mongodb.org/ruby/1.0.8/index.html
+http://api.mongodb.org/ruby/1.2.4/index.html
 
 = Credits
 
