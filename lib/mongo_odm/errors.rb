@@ -13,6 +13,12 @@ module MongoODM
         super "can't localize field #{field_name}; it has to be declared as a Hash, was #{klass}"
       end
     end
+    
+    class UnknownFieldError < StandardError
+      def initialize(field_name, klass)
+        super "unknown field #{field_name} on class #{klass.name}"
+      end
+    end
 
     class DocumentNotFound < StandardError
       def initialize(ids, klass)
