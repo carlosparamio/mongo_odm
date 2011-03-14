@@ -6,6 +6,9 @@ module MongoODM
     module Validations
 
       extend ActiveSupport::Concern
+      extend ActiveSupport::Autoload
+      
+      autoload :UniquenessValidator
 
       included do
         include ActiveModel::Validations
@@ -36,6 +39,25 @@ module MongoODM
           errors.clear
           run_callbacks(:validate)
           errors.empty?
+        end
+      end
+      
+      module ClassMethods
+        # Validates whether or not a field is unique against the documents in the
+        # database.
+        #
+        # @example
+        #
+        #   class Person
+        #     include MongoODM::Document
+        #     field :title
+        #
+        #     validates_uniqueness_of :title
+        #   end
+        #
+        # @param [ Array ] *args The arguments to pass to the validator.
+        def validates_uniqueness_of(*args)
+          validates_with(UniquenessValidator, _merge_attributes(args))
         end
       end
 

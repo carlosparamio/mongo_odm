@@ -88,18 +88,31 @@ module MongoODM
                         end
         end
         
-        def find(*args)
-          if args.size == 1 && args.first.is_a?(String)
-            MongoODM::Criteria.new(self, :_id => BSON::ObjectId.from_string(args.first))
-          elsif args.size == 1 && args.first.is_a?(BSON::ObjectId)
-            MongoODM::Criteria.new(self, :_id => args.first)
+        def find(selector = {}, opts = {})
+          if opts.blank? && selector.is_a?(String)
+            MongoODM::Criteria.new(self, :selector => {:_id => BSON::ObjectId.from_string(selector)})
+          elsif opts.blank? && selector.is_a?(BSON::ObjectId)
+            MongoODM::Criteria.new(self, :selector => {:_id => selector})
           else
-            MongoODM::Criteria.new(self, *args)
+            MongoODM::Criteria.new(self, :selector => selector, :opts => opts)
           end
         end
         
+        def sort(key_or_list, direction = nil)
+          order = key_or_list.is_a?(Array) ? key_or_list : direction.nil? ? [key_or_list, :asc] : [key_or_list, direction]
+          MongoODM::Criteria.new(self, :sort => order)
+        end
+        
+        def skip(number_to_skip = nil)
+          MongoODM::Criteria.new(self, :skip => number_to_skip)
+        end
+        
+        def limit(number_to_return = nil)
+          MongoODM::Criteria.new(self, :limit => number_to_return)
+        end
+        
         def cursor
-          @cursor ||= find.cursor
+          @cursor ||= find.to_cursor
         end
         
         def destroy_all(*args)
