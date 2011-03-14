@@ -45,6 +45,11 @@ class BSON::DBRef
   def inspect
     "BSON::DBRef(namespace:\"#{namespace}\", id: \"#{object_id}\")"
   end
+  
+  def eql?(other)
+    to_hash == other.to_hash
+  end
+  alias :== :eql?
 end
 
 # @private
