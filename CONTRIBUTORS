@@ -1,5 +1,15 @@
-Steve Sloan
+Steve Sloan (CodeMonkeySteve)
 
   * Config class, railtie to load config from YAML file
   * Timestamps module
   * BSON::DBRef ideas
+
+Dusty Doris (dusty)
+
+  * Bug fix
+  * before_validate callback
+
+Nikita Baksalyar (nbaksalyar)
+
+  * Bug fixes
+  * orm_adapter compatibility
