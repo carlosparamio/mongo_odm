@@ -5,61 +5,50 @@ module MongoODM
 
     delegate :inspect, :to_xml, :to_yaml, :to_json, :include?, :to => :to_a
 
-    def initialize(klass, options = {})
-      @klass    = klass
-      @selector = options[:selector] || {}
-      @opts     = options[:opts]     || {}
-      @sort     = options[:sort]     || []
-      @limit    = options[:limit]    || nil
-      @skip     = options[:skip]     || nil
+    def initialize(klass, selector = {}, opts = {})
+      @_klass    = klass
+      @_selector = selector
+      @_opts     = opts
       _set_cursor
     end
+    attr_reader :_klass, :_selector, :_opts
     
     def ==(other)
       case other
       when Criteria
-        other.instance_variable_get(:@selector) == @selector &&
-        other.instance_variable_get(:@opts)     == @opts     &&
-        other.instance_variable_get(:@sort)     == @sort    &&
-        other.instance_variable_get(:@limit)    == @limit    &&
-        other.instance_variable_get(:@skip)     == @skip
+        other._klass    == @_klass &&
+        other._selector == @_selector &&
+        other._opts     == @_opts
       else
         to_a == other.to_a
       end
     end
     
     def to_a
-      @cursor.to_a
+      @_result ||= @_cursor.rewind! && @_cursor.to_a
     end
     
     def to_cursor
-      @cursor
+      @_cursor
     end
     
     def _set_cursor
-      @cursor = @klass.collection.find(@selector, @opts)
-      @cursor = @cursor.sort(@sort)   unless @sort.blank?
-      @cursor = @cursor.limit(@limit) unless @limit.blank?
-      @cursor = @cursor.skip(@skip)   unless @skip.blank?
-      @cursor
+      @_cursor ||= @_klass.collection.find(@_selector, @_opts.dup)
     end
     
     def _merge_criteria(criteria)
-      @selector.merge!(criteria.instance_variable_get(:@selector))
-      @opts.merge!(criteria.instance_variable_get(:@opts))
-      @sort  << criteria.instance_variable_get(:@sort) unless criteria.instance_variable_get(:@sort).blank?
-      @limit = criteria.instance_variable_get(:@limit) unless criteria.instance_variable_get(:@limit).blank?
-      @skip  = criteria.instance_variable_get(:@skip)  unless criteria.instance_variable_get(:@skip).blank?
+      @_selector.merge!(criteria._selector)
+      @_opts.merge!(criteria._opts)
       _set_cursor
       self
     end
     
     def method_missing(method_name, *args, &block)
-      if @klass.respond_to?(method_name)
-        result = @klass.send(method_name, *args, &block)
+      if @_klass.respond_to?(method_name)
+        result = @_klass.send(method_name, *args, &block)
         result.is_a?(Criteria) ? _merge_criteria(result) : result
-      elsif @cursor.respond_to?(method_name)
-        @cursor.send(method_name, *args, &block)
+      elsif @_cursor.respond_to?(method_name)
+        @_cursor.send(method_name, *args, &block)
       elsif [].respond_to?(method_name)
         to_a.send(method_name, *args, &block)
       else
