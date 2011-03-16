@@ -41,6 +41,7 @@ module MongoODM
     def _merge_criteria(criteria)
       @_selector.rmerge!(criteria._selector)
       @_opts.rmerge!(criteria._opts)
+      @_cursor = nil
       _set_cursor
       self
     end
