@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{mongo_odm}
-  s.version = "0.2.12"
+  s.version = "0.2.13"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Carlos Paramio"]
@@ -27,6 +27,7 @@ Gem::Specification.new do |s|
     "lib/mongo_odm/collection.rb",
     "lib/mongo_odm/config.rb",
     "lib/mongo_odm/core_ext/conversions.rb",
+    "lib/mongo_odm/core_ext/hash_recursive_merge.rb",
     "lib/mongo_odm/criteria.rb",
     "lib/mongo_odm/cursor.rb",
     "lib/mongo_odm/document.rb",
