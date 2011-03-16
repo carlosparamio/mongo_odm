@@ -98,10 +98,6 @@ module MongoODM
           end
         end
         
-        def fields(keys)
-          MongoODM::Criteria.new(self, {}, {:fields => keys})
-        end
-        
         def sort(key_or_list, direction = nil)
           order = key_or_list.is_a?(Array) ? key_or_list : direction.nil? ? [key_or_list, :asc] : [key_or_list, direction]
           MongoODM::Criteria.new(self, {}, {:sort => order})

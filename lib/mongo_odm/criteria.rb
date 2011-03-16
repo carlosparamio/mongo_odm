@@ -1,4 +1,6 @@
 # encoding: utf-8
+require 'mongo_odm/core_ext/hash_recursive_merge'
+
 module MongoODM
 
   class Criteria
@@ -37,8 +39,8 @@ module MongoODM
     end
     
     def _merge_criteria(criteria)
-      @_selector.merge!(criteria._selector)
-      @_opts.merge!(criteria._opts)
+      @_selector.rmerge!(criteria._selector)
+      @_opts.rmerge!(criteria._opts)
       _set_cursor
       self
     end
