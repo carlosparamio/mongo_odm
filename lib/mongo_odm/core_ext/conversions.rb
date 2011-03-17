@@ -221,7 +221,7 @@ class Boolean
       value
     when /^\s*t/i
       true
-    when /^\s*f/i
+    when /^\s*f/i, "0"
       false
     else
       value.present?
