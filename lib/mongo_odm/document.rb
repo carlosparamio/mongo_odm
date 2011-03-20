@@ -10,6 +10,7 @@ module MongoODM
     autoload :AttributeMethods
     autoload :Callbacks
     autoload :Fields
+    autoload :Indexes
     autoload :Inspect
     autoload :Persistence
     autoload :Timestamps
@@ -27,6 +28,7 @@ module MongoODM
       include Document::Persistence
       include Document::AttributeMethods
       include Document::Fields
+      include Document::Indexes
       include Document::Inspect
       include Document::Callbacks
       include Document::Validations

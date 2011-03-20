@@ -161,8 +161,10 @@ To embed just one copy of another class, just define the field type of that clas
     field :name
     field :rgb, RGB
     
-    create_index :name, :unique => true
+    index :name, :unique => true
   end
+  
+  Color.create_indexes
   
   color = Color.new(:name => "red", :rgb => RGB.new(255,0,0))
   color.save
