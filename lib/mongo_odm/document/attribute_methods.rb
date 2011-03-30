@@ -92,7 +92,7 @@ module MongoODM
     
       module ClassMethods
         def default_attributes
-          HashWithIndifferentAccess[fields.values.map{|field| [field.name, field.default]}]
+          HashWithIndifferentAccess[fields.values.map{|field| [field.name, field.default.respond_to?(:call) ? field.default.call : field.default]}]
         end
         
         def define_attribute_methods_for_fields

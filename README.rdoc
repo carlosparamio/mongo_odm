@@ -76,6 +76,8 @@ And because any query method returns a MongoODM::Criteria object, you can concat
 You can also define your own class methods that returns criteria objects, and concatenate them to obtain a single criteria with all the conditions merged in the calls order:
 
   class Shape
+    include MongoODM::Document
+  
     def self.with_radius(n)
       find(:radius => n)
     end
@@ -86,6 +88,15 @@ You can also define your own class methods that returns criteria objects, and co
   end
   
   Shape.with_radius(1).ordered_by_color # Returns the same criteria than the previous example
+
+Default values for fields can be either a fixed value, or a block, in which case the block will be called each time an object is instantiated. Example:
+
+  class Timestamp
+    include MongoODM::Document
+    
+    field :value, Time, :default => lambda { Time.now }
+    field :set, Set, :default => lambda { Set.new }
+  end
 
 Take a look at the Mongo Ruby driver documentation for the 'find' method to see the available options:
 
