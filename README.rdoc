@@ -164,7 +164,7 @@ To embed just one copy of another class, just define the field type of that clas
     index :name, :unique => true
   end
   
-  Color.create_indexes
+  Color.create_indexes # You can also use MongoODM.create_indexes to create all the indexes at all classes at the same time
   
   color = Color.new(:name => "red", :rgb => RGB.new(255,0,0))
   color.save

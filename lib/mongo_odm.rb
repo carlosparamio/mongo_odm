@@ -51,5 +51,17 @@ module MongoODM
   def self.dereference(value)
     value.respond_to?(:dereference) ? value.dereference : value
   end
+  
+  def self.indexed_classes
+    @_indexes ||= Set.new
+  end
+  
+  def self.create_indexes
+    indexed_classes.each {|klass| klass.create_indexes}
+  end
+  
+  def self.add_index_class(klass)
+    indexed_classes << klass
+  end
 
 end

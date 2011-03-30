@@ -38,6 +38,7 @@ module MongoODM
         def index(spec, opts = {})
           new_index = Index.new(spec, opts)
           indexes << new_index
+          MongoODM.add_index_class(self)
           new_index
         end
         
