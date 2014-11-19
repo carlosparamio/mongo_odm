@@ -1,3 +1,5 @@
+{<img src="https://badge.fury.io/rb/mongo_odm.svg" alt="Gem Version" />}[http://badge.fury.io/rb/mongo_odm]
+
 = mongo_odm
 
 Flexible persistence module for any Ruby class to MongoDB.
